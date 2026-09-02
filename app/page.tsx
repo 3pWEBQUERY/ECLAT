@@ -27,6 +27,8 @@ const steps = [
   ["04", "Feiern", "Sie sind Gast auf Ihrem eigenen Fest. Genau so soll es sein."],
 ];
 
+const eventOptions = ["Hochzeit", "Geburtstag", "Jubiläum", "Firmenfest", "Anderer Anlass"];
+
 function Arrow() {
   return <span aria-hidden="true">↗</span>;
 }
@@ -35,7 +37,13 @@ export default function Home() {
   const [theme, setTheme] = useState<"light" | "dark">("dark");
   const [menuOpen, setMenuOpen] = useState(false);
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
+  const [eventType, setEventType] = useState("");
+  const [eventSelectOpen, setEventSelectOpen] = useState(false);
+  const [activeEventOption, setActiveEventOption] = useState(0);
+  const [eventSelectError, setEventSelectError] = useState(false);
   const heroRef = useRef<HTMLElement>(null);
+  const eventSelectRef = useRef<HTMLDivElement>(null);
+  const eventSelectButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const saved = localStorage.getItem("eclat-theme") as "light" | "dark" | null;
@@ -47,6 +55,14 @@ export default function Home() {
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("/sw.js").catch(() => undefined);
     }
+  }, []);
+
+  useEffect(() => {
+    const closeEventSelect = (event: PointerEvent) => {
+      if (!eventSelectRef.current?.contains(event.target as Node)) setEventSelectOpen(false);
+    };
+    document.addEventListener("pointerdown", closeEventSelect);
+    return () => document.removeEventListener("pointerdown", closeEventSelect);
   }, []);
 
   const toggleTheme = () => {
@@ -67,6 +83,12 @@ export default function Home() {
 
   const submitInquiry = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (!eventType) {
+      setEventSelectError(true);
+      setStatus("idle");
+      eventSelectButtonRef.current?.focus();
+      return;
+    }
     setStatus("sending");
     const form = event.currentTarget;
     const data = Object.fromEntries(new FormData(form));
@@ -79,9 +101,35 @@ export default function Home() {
       });
       if (!response.ok) throw new Error("request failed");
       form.reset();
+      setEventType("");
       setStatus("success");
     } catch {
       setStatus("error");
+    }
+  };
+
+  const chooseEventType = (option: string) => {
+    setEventType(option);
+    setEventSelectError(false);
+    setEventSelectOpen(false);
+    eventSelectButtonRef.current?.focus();
+  };
+
+  const handleEventSelectKey = (event: React.KeyboardEvent<HTMLButtonElement>) => {
+    if (event.key === "Escape") {
+      setEventSelectOpen(false);
+      return;
+    }
+    if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+      event.preventDefault();
+      const direction = event.key === "ArrowDown" ? 1 : -1;
+      setEventSelectOpen(true);
+      setActiveEventOption((current) => (current + direction + eventOptions.length) % eventOptions.length);
+      return;
+    }
+    if ((event.key === "Enter" || event.key === " ") && eventSelectOpen) {
+      event.preventDefault();
+      chooseEventType(eventOptions[activeEventOption]);
     }
   };
 
@@ -248,7 +296,48 @@ export default function Home() {
             <label>E-MAIL<input required type="email" name="email" autoComplete="email" placeholder="name@beispiel.ch" /></label>
           </div>
           <div className="form-row three">
-            <label>ANLASS<select required name="eventType" defaultValue=""><option value="" disabled>Bitte wählen</option><option>Hochzeit</option><option>Geburtstag</option><option>Jubiläum</option><option>Firmenfest</option><option>Anderer Anlass</option></select></label>
+            <div className="custom-field">
+              <span className="field-label">ANLASS</span>
+              <div className={`custom-select${eventSelectOpen ? " is-open" : ""}${eventSelectError ? " has-error" : ""}`} ref={eventSelectRef}>
+                <input type="hidden" name="eventType" value={eventType} />
+                <button
+                  ref={eventSelectButtonRef}
+                  className="custom-select-trigger"
+                  type="button"
+                  role="combobox"
+                  aria-controls="event-options"
+                  aria-expanded={eventSelectOpen}
+                  aria-haspopup="listbox"
+                  aria-invalid={eventSelectError}
+                  aria-label="Anlass auswählen"
+                  onClick={() => setEventSelectOpen((open) => !open)}
+                  onKeyDown={handleEventSelectKey}
+                >
+                  <span className={eventType ? "" : "placeholder"}>{eventType || "Bitte wählen"}</span>
+                  <i aria-hidden="true" />
+                </button>
+                {eventSelectOpen && (
+                  <ul id="event-options" className="custom-select-panel" role="listbox" aria-label="Anlass">
+                    {eventOptions.map((option, index) => (
+                      <li
+                        id={`event-option-${index}`}
+                        key={option}
+                        role="option"
+                        aria-selected={eventType === option}
+                        className={activeEventOption === index ? "is-active" : ""}
+                        onPointerEnter={() => setActiveEventOption(index)}
+                        onClick={() => chooseEventType(option)}
+                      >
+                        <span>{String(index + 1).padStart(2, "0")}</span>
+                        {option}
+                        <b aria-hidden="true">↗</b>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+              {eventSelectError && <small className="field-error">Bitte wählen Sie einen Anlass.</small>}
+            </div>
             <label>DATUM<input type="date" name="eventDate" /></label>
             <label>GÄSTE<input type="number" name="guests" min="2" max="2000" placeholder="ca. 80" /></label>
           </div>
