@@ -30,7 +30,7 @@ const steps = [
 const eventOptions = ["Hochzeit", "Geburtstag", "Jubiläum", "Firmenfest", "Anderer Anlass"];
 
 function Arrow() {
-  return <span aria-hidden="true">↗</span>;
+  return <span className="arrow-icon" aria-hidden="true" />;
 }
 
 export default function Home() {
@@ -362,7 +362,7 @@ export default function Home() {
                       >
                         <span>{String(index + 1).padStart(2, "0")}</span>
                         {option}
-                        <b aria-hidden="true">↗</b>
+                        <b aria-hidden="true"><Arrow /></b>
                       </li>
                     ))}
                   </ul>
@@ -389,7 +389,7 @@ export default function Home() {
       <footer>
         <div className="footer-brand">ÉCLAT<small>EVENTS</small></div>
         <div><span>KONTAKT</span><a href="mailto:hallo@eclat-events.ch">hallo@eclat-events.ch</a><a href="tel:+41445550102">+41 44 555 01 02</a></div>
-        <div><span>FOLGEN</span><a href="#">Instagram ↗</a><a href="#">Pinterest ↗</a></div>
+        <div><span>FOLGEN</span><a className="footer-social-link" href="#">Instagram <Arrow /></a><a className="footer-social-link" href="#">Pinterest <Arrow /></a></div>
         <div><span>RECHTLICHES</span><button type="button" className="footer-link" onClick={() => openLegalPanel("impressum")}>Impressum</button><button type="button" className="footer-link" onClick={() => openLegalPanel("datenschutz")}>Datenschutz</button></div>
         <div className="footer-bottom"><span>© 2026 ÉCLAT EVENTS</span><span>ZÜRICH · SCHWEIZ</span><a href="#top">NACH OBEN ↑</a></div>
       </footer>
