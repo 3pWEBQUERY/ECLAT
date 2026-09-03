@@ -34,6 +34,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="de" suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: `(function(){try{if(matchMedia('(max-width: 700px)').matches){history.scrollRestoration='manual';if(location.hash){history.replaceState(null,'',location.pathname+location.search)}var r=function(){scrollTo(0,0)};r();addEventListener('DOMContentLoaded',r,{once:true});addEventListener('pageshow',r,{once:true})}}catch(e){}})()` }} />
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('eclat-theme');document.documentElement.dataset.theme=t||((matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark')}catch(e){}})()` }} />
       </head>
       <body>{children}</body>
