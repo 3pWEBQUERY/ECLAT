@@ -268,7 +268,7 @@ export default function Home() {
       <section id="prozess" className="process section-pad">
         <div className="section-heading compact">
           <span>04 / DER WEG</span>
-          <h2>Von der Idee<br />zum Gänsehautmoment.</h2>
+          <h2>Von der Idee<br />zum <span className="process-title-word">Gänsehautmoment.</span></h2>
         </div>
         <div className="steps">
           {steps.map(([number, title, description]) => (
