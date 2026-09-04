@@ -28,6 +28,13 @@ const steps = [
 ];
 
 const eventOptions = ["Hochzeit", "Geburtstag", "Jubiläum", "Firmenfest", "Anderer Anlass"];
+const budgetOptions = [
+  { label: "Noch offen", value: "" },
+  { label: "Bis CHF 5’000", value: "Bis CHF 5’000" },
+  { label: "CHF 5’000 – 15’000", value: "CHF 5’000 – 15’000" },
+  { label: "CHF 15’000 – 30’000", value: "CHF 15’000 – 30’000" },
+  { label: "Ab CHF 30’000", value: "Ab CHF 30’000" },
+];
 
 function Arrow() {
   return <span className="arrow-icon" aria-hidden="true" />;
@@ -41,10 +48,15 @@ export default function Home() {
   const [eventSelectOpen, setEventSelectOpen] = useState(false);
   const [activeEventOption, setActiveEventOption] = useState(0);
   const [eventSelectError, setEventSelectError] = useState(false);
+  const [budget, setBudget] = useState("");
+  const [budgetSelectOpen, setBudgetSelectOpen] = useState(false);
+  const [activeBudgetOption, setActiveBudgetOption] = useState(0);
   const [legalPanel, setLegalPanel] = useState<"impressum" | "datenschutz" | null>(null);
   const heroRef = useRef<HTMLElement>(null);
   const eventSelectRef = useRef<HTMLDivElement>(null);
   const eventSelectButtonRef = useRef<HTMLButtonElement>(null);
+  const budgetSelectRef = useRef<HTMLDivElement>(null);
+  const budgetSelectButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const saved = localStorage.getItem("eclat-theme") as "light" | "dark" | null;
@@ -77,11 +89,12 @@ export default function Home() {
   }, [menuOpen, legalPanel]);
 
   useEffect(() => {
-    const closeEventSelect = (event: PointerEvent) => {
+    const closeCustomSelects = (event: PointerEvent) => {
       if (!eventSelectRef.current?.contains(event.target as Node)) setEventSelectOpen(false);
+      if (!budgetSelectRef.current?.contains(event.target as Node)) setBudgetSelectOpen(false);
     };
-    document.addEventListener("pointerdown", closeEventSelect);
-    return () => document.removeEventListener("pointerdown", closeEventSelect);
+    document.addEventListener("pointerdown", closeCustomSelects);
+    return () => document.removeEventListener("pointerdown", closeCustomSelects);
   }, []);
 
   const toggleTheme = () => {
@@ -121,6 +134,7 @@ export default function Home() {
       if (!response.ok) throw new Error("request failed");
       form.reset();
       setEventType("");
+      setBudget("");
       setStatus("success");
     } catch {
       setStatus("error");
@@ -131,6 +145,7 @@ export default function Home() {
     setEventType(option);
     setEventSelectError(false);
     setEventSelectOpen(false);
+    setBudgetSelectOpen(false);
     eventSelectButtonRef.current?.focus();
   };
 
@@ -149,6 +164,31 @@ export default function Home() {
     if ((event.key === "Enter" || event.key === " ") && eventSelectOpen) {
       event.preventDefault();
       chooseEventType(eventOptions[activeEventOption]);
+    }
+  };
+
+  const chooseBudget = (option: (typeof budgetOptions)[number]) => {
+    setBudget(option.value);
+    setBudgetSelectOpen(false);
+    setEventSelectOpen(false);
+    budgetSelectButtonRef.current?.focus();
+  };
+
+  const handleBudgetSelectKey = (event: React.KeyboardEvent<HTMLButtonElement>) => {
+    if (event.key === "Escape") {
+      setBudgetSelectOpen(false);
+      return;
+    }
+    if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+      event.preventDefault();
+      const direction = event.key === "ArrowDown" ? 1 : -1;
+      setBudgetSelectOpen(true);
+      setActiveBudgetOption((current) => (current + direction + budgetOptions.length) % budgetOptions.length);
+      return;
+    }
+    if ((event.key === "Enter" || event.key === " ") && budgetSelectOpen) {
+      event.preventDefault();
+      chooseBudget(budgetOptions[activeBudgetOption]);
     }
   };
 
@@ -286,7 +326,7 @@ export default function Home() {
       <section className="promise">
         <div className="promise-side">UNSER VERSPRECHEN</div>
         <blockquote>„Wir planen nicht für Instagram. Wir planen für den Moment, in dem Sie sich umsehen und denken: <em>Genau so.</em>“</blockquote>
-        <div className="signature">Éclat · Gründerinnen</div>
+        <div className="signature">Éclat · Gründerinn · Fabienne Celine Krempel</div>
       </section>
 
       <section className="pricing section-pad">
@@ -344,7 +384,10 @@ export default function Home() {
                   aria-haspopup="listbox"
                   aria-invalid={eventSelectError}
                   aria-label="Anlass auswählen"
-                  onClick={() => setEventSelectOpen((open) => !open)}
+                  onClick={() => {
+                    setBudgetSelectOpen(false);
+                    setEventSelectOpen((open) => !open);
+                  }}
                   onKeyDown={handleEventSelectKey}
                 >
                   <span className={eventType ? "" : "placeholder"}>{eventType || "Bitte wählen"}</span>
@@ -375,7 +418,49 @@ export default function Home() {
             <label>DATUM<input type="date" name="eventDate" /></label>
             <label>GÄSTE<input type="number" name="guests" min="2" max="2000" placeholder="ca. 80" /></label>
           </div>
-          <label>BUDGETRAHMEN<select name="budget" defaultValue=""><option value="">Noch offen</option><option>Bis CHF 5’000</option><option>CHF 5’000 – 15’000</option><option>CHF 15’000 – 30’000</option><option>Ab CHF 30’000</option></select></label>
+          <div className="custom-field">
+            <span className="field-label">BUDGETRAHMEN</span>
+            <div className={`custom-select${budgetSelectOpen ? " is-open" : ""}`} ref={budgetSelectRef}>
+              <input type="hidden" name="budget" value={budget} />
+              <button
+                ref={budgetSelectButtonRef}
+                className="custom-select-trigger"
+                type="button"
+                role="combobox"
+                aria-controls="budget-options"
+                aria-expanded={budgetSelectOpen}
+                aria-haspopup="listbox"
+                aria-label="Budgetrahmen auswählen"
+                onClick={() => {
+                  setEventSelectOpen(false);
+                  setBudgetSelectOpen((open) => !open);
+                }}
+                onKeyDown={handleBudgetSelectKey}
+              >
+                <span className={budget ? "" : "placeholder"}>{budget || "Noch offen"}</span>
+                <i aria-hidden="true" />
+              </button>
+              {budgetSelectOpen && (
+                <ul id="budget-options" className="custom-select-panel" role="listbox" aria-label="Budgetrahmen">
+                  {budgetOptions.map((option, index) => (
+                    <li
+                      id={`budget-option-${index}`}
+                      key={option.label}
+                      role="option"
+                      aria-selected={budget === option.value}
+                      className={activeBudgetOption === index ? "is-active" : ""}
+                      onPointerEnter={() => setActiveBudgetOption(index)}
+                      onClick={() => chooseBudget(option)}
+                    >
+                      <span>{String(index + 1).padStart(2, "0")}</span>
+                      {option.label}
+                      <b aria-hidden="true"><Arrow /></b>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
           <label>WAS DÜRFEN WIR WISSEN?<textarea required name="message" rows={4} placeholder="Erzählen Sie uns von Ihrer Idee, dem Ort und dem Gefühl, das entstehen soll …" /></label>
           <label className="privacy"><input required type="checkbox" name="privacy" /> <span>Ich bin mit der Verarbeitung meiner Angaben zur Kontaktaufnahme einverstanden.</span></label>
           <button className="submit-button" disabled={status === "sending"}>
