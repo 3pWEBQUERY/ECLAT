@@ -6,8 +6,11 @@ Premium Event-Website für Hochzeiten, private Feste und Business Events in Zür
 
 ```bash
 npm install
-cp .env.example .env
 npm run dev
 ```
 
-Für das Anfrageformular wird eine Neon-Postgres-Verbindung über `DATABASE_URL` benötigt. Das passende Schema liegt in `db/neon-schema.sql`; die Tabelle wird beim ersten erfolgreichen Absenden zusätzlich automatisch angelegt.
+Die Website und der Vercel-Build benötigen keine Environment-Variablen. Für eine spätere Aktivierung der Neon-Speicherung des Anfrageformulars liegt das passende Schema unter `db/neon-schema.sql`.
+
+## Deployment
+
+Vercel verwendet mit `npm run build` den nativen Next.js-Build. Der separate Cloudflare/Sites-Build bleibt über `npm run build:sites` verfügbar.

@@ -50,12 +50,14 @@ export default function Home() {
     const saved = localStorage.getItem("eclat-theme") as "light" | "dark" | null;
     const preferred = window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
     const initial = saved ?? preferred;
-    setTheme(initial);
     document.documentElement.dataset.theme = initial;
+    const themeFrame = window.requestAnimationFrame(() => setTheme(initial));
 
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("/sw.js").catch(() => undefined);
     }
+
+    return () => window.cancelAnimationFrame(themeFrame);
   }, []);
 
   useEffect(() => {
