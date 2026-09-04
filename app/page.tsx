@@ -35,6 +35,29 @@ const budgetOptions = [
   { label: "CHF 15’000 – 30’000", value: "CHF 15’000 – 30’000" },
   { label: "Ab CHF 30’000", value: "Ab CHF 30’000" },
 ];
+const weekdayLabels = ["MO", "DI", "MI", "DO", "FR", "SA", "SO"];
+const monthFormatter = new Intl.DateTimeFormat("de-CH", { month: "long", year: "numeric" });
+const dateFormatter = new Intl.DateTimeFormat("de-CH", { day: "2-digit", month: "long", year: "numeric" });
+
+function toDateValue(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function fromDateValue(value: string) {
+  const [year, month, day] = value.split("-").map(Number);
+  return new Date(year, month - 1, day);
+}
+
+function getCalendarDays(month: Date) {
+  const firstDay = new Date(month.getFullYear(), month.getMonth(), 1);
+  const mondayOffset = (firstDay.getDay() + 6) % 7;
+  return Array.from({ length: 42 }, (_, index) => (
+    new Date(month.getFullYear(), month.getMonth(), index - mondayOffset + 1)
+  ));
+}
 
 function Arrow() {
   return <span className="arrow-icon" aria-hidden="true" />;
@@ -51,12 +74,20 @@ export default function Home() {
   const [budget, setBudget] = useState("");
   const [budgetSelectOpen, setBudgetSelectOpen] = useState(false);
   const [activeBudgetOption, setActiveBudgetOption] = useState(0);
+  const [eventDate, setEventDate] = useState("");
+  const [datePickerOpen, setDatePickerOpen] = useState(false);
+  const [visibleMonth, setVisibleMonth] = useState(() => {
+    const today = new Date();
+    return new Date(today.getFullYear(), today.getMonth(), 1);
+  });
   const [legalPanel, setLegalPanel] = useState<"impressum" | "datenschutz" | null>(null);
   const heroRef = useRef<HTMLElement>(null);
   const eventSelectRef = useRef<HTMLDivElement>(null);
   const eventSelectButtonRef = useRef<HTMLButtonElement>(null);
   const budgetSelectRef = useRef<HTMLDivElement>(null);
   const budgetSelectButtonRef = useRef<HTMLButtonElement>(null);
+  const datePickerRef = useRef<HTMLDivElement>(null);
+  const datePickerButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const saved = localStorage.getItem("eclat-theme") as "light" | "dark" | null;
@@ -92,6 +123,7 @@ export default function Home() {
     const closeCustomSelects = (event: PointerEvent) => {
       if (!eventSelectRef.current?.contains(event.target as Node)) setEventSelectOpen(false);
       if (!budgetSelectRef.current?.contains(event.target as Node)) setBudgetSelectOpen(false);
+      if (!datePickerRef.current?.contains(event.target as Node)) setDatePickerOpen(false);
     };
     document.addEventListener("pointerdown", closeCustomSelects);
     return () => document.removeEventListener("pointerdown", closeCustomSelects);
@@ -135,6 +167,7 @@ export default function Home() {
       form.reset();
       setEventType("");
       setBudget("");
+      setEventDate("");
       setStatus("success");
     } catch {
       setStatus("error");
@@ -146,6 +179,7 @@ export default function Home() {
     setEventSelectError(false);
     setEventSelectOpen(false);
     setBudgetSelectOpen(false);
+    setDatePickerOpen(false);
     eventSelectButtonRef.current?.focus();
   };
 
@@ -157,6 +191,8 @@ export default function Home() {
     if (event.key === "ArrowDown" || event.key === "ArrowUp") {
       event.preventDefault();
       const direction = event.key === "ArrowDown" ? 1 : -1;
+      setBudgetSelectOpen(false);
+      setDatePickerOpen(false);
       setEventSelectOpen(true);
       setActiveEventOption((current) => (current + direction + eventOptions.length) % eventOptions.length);
       return;
@@ -171,7 +207,32 @@ export default function Home() {
     setBudget(option.value);
     setBudgetSelectOpen(false);
     setEventSelectOpen(false);
+    setDatePickerOpen(false);
     budgetSelectButtonRef.current?.focus();
+  };
+
+  const toggleDatePicker = () => {
+    if (!datePickerOpen) {
+      const baseDate = eventDate ? fromDateValue(eventDate) : new Date();
+      setVisibleMonth(new Date(baseDate.getFullYear(), baseDate.getMonth(), 1));
+      setEventSelectOpen(false);
+      setBudgetSelectOpen(false);
+    }
+    setDatePickerOpen((open) => !open);
+  };
+
+  const chooseDate = (date: Date) => {
+    setEventDate(toDateValue(date));
+    setDatePickerOpen(false);
+    datePickerSelectButtonFocus();
+  };
+
+  const datePickerSelectButtonFocus = () => {
+    window.requestAnimationFrame(() => datePickerButtonRef.current?.focus());
+  };
+
+  const changeVisibleMonth = (offset: number) => {
+    setVisibleMonth((month) => new Date(month.getFullYear(), month.getMonth() + offset, 1));
   };
 
   const handleBudgetSelectKey = (event: React.KeyboardEvent<HTMLButtonElement>) => {
@@ -182,6 +243,8 @@ export default function Home() {
     if (event.key === "ArrowDown" || event.key === "ArrowUp") {
       event.preventDefault();
       const direction = event.key === "ArrowDown" ? 1 : -1;
+      setEventSelectOpen(false);
+      setDatePickerOpen(false);
       setBudgetSelectOpen(true);
       setActiveBudgetOption((current) => (current + direction + budgetOptions.length) % budgetOptions.length);
       return;
@@ -196,6 +259,13 @@ export default function Home() {
     setMenuOpen(false);
     setLegalPanel(panel);
   };
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const calendarDays = getCalendarDays(visibleMonth);
+  const selectedDate = eventDate ? fromDateValue(eventDate) : null;
+  const previousMonthDisabled = visibleMonth.getFullYear() === today.getFullYear()
+    && visibleMonth.getMonth() === today.getMonth();
 
   return (
     <main>
@@ -386,6 +456,7 @@ export default function Home() {
                   aria-label="Anlass auswählen"
                   onClick={() => {
                     setBudgetSelectOpen(false);
+                    setDatePickerOpen(false);
                     setEventSelectOpen((open) => !open);
                   }}
                   onKeyDown={handleEventSelectKey}
@@ -415,7 +486,79 @@ export default function Home() {
               </div>
               {eventSelectError && <small className="field-error">Bitte wählen Sie einen Anlass.</small>}
             </div>
-            <label>DATUM<input type="date" name="eventDate" /></label>
+            <div className="custom-field">
+              <span className="field-label">DATUM</span>
+              <div className={`custom-select custom-date${datePickerOpen ? " is-open" : ""}`} ref={datePickerRef}>
+                <input type="hidden" name="eventDate" value={eventDate} />
+                <button
+                  ref={datePickerButtonRef}
+                  className="custom-select-trigger date-picker-trigger"
+                  type="button"
+                  aria-controls="event-date-picker"
+                  aria-expanded={datePickerOpen}
+                  aria-haspopup="dialog"
+                  aria-label="Datum auswählen"
+                  onClick={toggleDatePicker}
+                >
+                  <span className={eventDate ? "" : "placeholder"}>
+                    {selectedDate ? dateFormatter.format(selectedDate) : "Datum wählen"}
+                  </span>
+                  <i aria-hidden="true" />
+                </button>
+                {datePickerOpen && (
+                  <div
+                    id="event-date-picker"
+                    className="date-picker-panel"
+                    role="dialog"
+                    aria-modal="false"
+                    aria-labelledby="date-picker-month"
+                    onKeyDown={(event) => {
+                      if (event.key === "Escape") {
+                        setDatePickerOpen(false);
+                        datePickerSelectButtonFocus();
+                      }
+                    }}
+                  >
+                    <div className="date-picker-head">
+                      <button type="button" disabled={previousMonthDisabled} onClick={() => changeVisibleMonth(-1)} aria-label="Vorheriger Monat">
+                        <span className="month-chevron" aria-hidden="true" />
+                      </button>
+                      <strong id="date-picker-month" aria-live="polite">{monthFormatter.format(visibleMonth)}</strong>
+                      <button className="next-month" type="button" onClick={() => changeVisibleMonth(1)} aria-label="Nächster Monat">
+                        <span className="month-chevron" aria-hidden="true" />
+                      </button>
+                    </div>
+                    <div className="date-picker-weekdays" aria-hidden="true">
+                      {weekdayLabels.map((day) => <span key={day}>{day}</span>)}
+                    </div>
+                    <div className="date-picker-days" role="grid" aria-label={monthFormatter.format(visibleMonth)}>
+                      {calendarDays.map((date) => {
+                        const value = toDateValue(date);
+                        const isOutsideMonth = date.getMonth() !== visibleMonth.getMonth();
+                        const isPast = date < today;
+                        const isSelected = selectedDate ? toDateValue(selectedDate) === value : false;
+                        const isToday = toDateValue(today) === value;
+                        return (
+                          <button
+                            key={value}
+                            type="button"
+                            role="gridcell"
+                            disabled={isPast}
+                            aria-selected={isSelected}
+                            aria-label={dateFormatter.format(date)}
+                            autoFocus={isSelected || (!selectedDate && isToday)}
+                            className={`${isOutsideMonth ? "is-outside " : ""}${isToday ? "is-today " : ""}${isSelected ? "is-selected" : ""}`.trim()}
+                            onClick={() => chooseDate(date)}
+                          >
+                            {date.getDate()}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
             <label>GÄSTE<input type="number" name="guests" min="2" max="2000" placeholder="ca. 80" /></label>
           </div>
           <div className="custom-field">
@@ -433,6 +576,7 @@ export default function Home() {
                 aria-label="Budgetrahmen auswählen"
                 onClick={() => {
                   setEventSelectOpen(false);
+                  setDatePickerOpen(false);
                   setBudgetSelectOpen((open) => !open);
                 }}
                 onKeyDown={handleBudgetSelectKey}
