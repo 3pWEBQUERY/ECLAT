@@ -1,24 +1,144 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
+const siteUrl = "https://eclat-kappa-inky.vercel.app";
+const seoTitle = "Eventplanung Zürich für Hochzeiten & Feste | Éclat";
+const seoDescription = "Éclat Events plant Hochzeiten, Geburtstage, Firmenfeste und private Feiern in Zürich und Umgebung – persönlich, stilvoll und transparent kalkuliert.";
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://eclat-events.ch"),
-  title: "Éclat Events | Feste mit Charakter",
-  description: "Persönliche Eventplanung für Hochzeiten, Geburtstage und besondere Feste in Zürich und Umgebung – stilvoll, transparent und bezahlbar.",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: seoTitle,
+    template: "%s | Éclat Events",
+  },
+  description: seoDescription,
   applicationName: "Éclat Events",
+  authors: [{ name: "Éclat Events", url: siteUrl }],
+  creator: "Éclat Events",
+  publisher: "Éclat Events",
+  category: "Eventplanung",
+  keywords: [
+    "Eventplanung Zürich",
+    "Hochzeitsplanung Zürich",
+    "Wedding Planner Zürich",
+    "Geburtstag planen Zürich",
+    "Firmenfest Zürich",
+    "Eventagentur Zürich",
+    "private Feiern planen",
+    "Éclat Events",
+  ],
+  alternates: {
+    canonical: "/",
+    languages: { "de-CH": "/" },
+  },
+  robots: {
+    index: true,
+    follow: true,
+    nocache: false,
+    googleBot: {
+      index: true,
+      follow: true,
+      noimageindex: false,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
   manifest: "/manifest.webmanifest",
   appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: "Éclat" },
   formatDetection: { telephone: false },
   openGraph: {
-    title: "Éclat Events | Feste mit Charakter",
-    description: "Wunderschön geplant. Persönlich begleitet. Fair kalkuliert.",
+    title: seoTitle,
+    description: seoDescription,
+    url: "/",
     type: "website",
     locale: "de_CH",
     siteName: "Éclat Events",
-    images: [{ url: "/og.png", width: 1200, height: 630, alt: "Éclat Events – Feste mit Charakter" }],
+    images: [{ url: "/og.png", width: 1731, height: 909, alt: "Éclat Events – stilvolle Eventplanung in Zürich" }],
   },
-  twitter: { card: "summary_large_image", title: "Éclat Events", description: "Feste mit Charakter – Zürich & Umgebung.", images: ["/og.png"] },
+  twitter: {
+    card: "summary_large_image",
+    title: seoTitle,
+    description: seoDescription,
+    images: [{ url: "/og.png", alt: "Éclat Events – stilvolle Eventplanung in Zürich" }],
+  },
   icons: { icon: "/icon-192.png", apple: "/icon-192.png" },
+  other: {
+    "geo.region": "CH-ZH",
+    "geo.placename": "Zürich",
+  },
+};
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": `${siteUrl}/#website`,
+      url: siteUrl,
+      name: "Éclat Events",
+      alternateName: "Éclat",
+      description: seoDescription,
+      inLanguage: "de-CH",
+      publisher: { "@id": `${siteUrl}/#organization` },
+    },
+    {
+      "@type": "Organization",
+      "@id": `${siteUrl}/#organization`,
+      name: "Éclat Events",
+      alternateName: "Éclat",
+      url: siteUrl,
+      logo: {
+        "@type": "ImageObject",
+        url: `${siteUrl}/icon-512.png`,
+        width: 512,
+        height: 512,
+      },
+      image: `${siteUrl}/og.png`,
+      email: "hallo@eclat-events.ch",
+      telephone: "+41 44 555 01 02",
+      areaServed: {
+        "@type": "AdministrativeArea",
+        name: "Zürich und Umgebung",
+      },
+      contactPoint: {
+        "@type": "ContactPoint",
+        contactType: "Kundenberatung",
+        email: "hallo@eclat-events.ch",
+        telephone: "+41 44 555 01 02",
+        availableLanguage: ["de", "de-CH"],
+        areaServed: "CH",
+      },
+      knowsAbout: [
+        "Hochzeitsplanung",
+        "Private Feiern",
+        "Geburtstagsplanung",
+        "Firmenveranstaltungen",
+        "Eventkonzeption",
+      ],
+    },
+    {
+      "@type": "Service",
+      "@id": `${siteUrl}/#eventplanung`,
+      name: "Persönliche Eventplanung in Zürich",
+      description: seoDescription,
+      serviceType: "Eventplanung und Eventkonzeption",
+      provider: { "@id": `${siteUrl}/#organization` },
+      areaServed: {
+        "@type": "AdministrativeArea",
+        name: "Zürich und Umgebung",
+      },
+      hasOfferCatalog: {
+        "@type": "OfferCatalog",
+        name: "Eventplanung",
+        itemListElement: [
+          { "@type": "Offer", itemOffered: { "@type": "Service", name: "Hochzeitsplanung" } },
+          { "@type": "Offer", itemOffered: { "@type": "Service", name: "Planung privater Feste" } },
+          { "@type": "Offer", itemOffered: { "@type": "Service", name: "Planung von Business Events" } },
+        ],
+      },
+    },
+  ],
 };
 
 export const viewport: Viewport = {
@@ -32,8 +152,12 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="de" suppressHydrationWarning>
+    <html lang="de-CH" suppressHydrationWarning>
       <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, "\\u003c") }}
+        />
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{if(matchMedia('(max-width: 700px)').matches){history.scrollRestoration='manual';if(location.hash){history.replaceState(null,'',location.pathname+location.search)}var r=function(){scrollTo(0,0)};r();addEventListener('DOMContentLoaded',r,{once:true});addEventListener('pageshow',r,{once:true})}}catch(e){}})()` }} />
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('eclat-theme');document.documentElement.dataset.theme=t||((matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark')}catch(e){}})()` }} />
       </head>
