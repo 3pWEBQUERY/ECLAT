@@ -81,6 +81,8 @@ export default function Home() {
     return new Date(today.getFullYear(), today.getMonth(), 1);
   });
   const [legalPanel, setLegalPanel] = useState<"impressum" | "datenschutz" | null>(null);
+  const [heroVideoEnabled, setHeroVideoEnabled] = useState(false);
+  const [heroVideoPlaying, setHeroVideoPlaying] = useState(false);
   const heroRef = useRef<HTMLElement>(null);
   const heroVideoRef = useRef<HTMLVideoElement>(null);
   const eventSelectRef = useRef<HTMLDivElement>(null);
@@ -97,11 +99,23 @@ export default function Home() {
     document.documentElement.dataset.theme = initial;
     const themeFrame = window.requestAnimationFrame(() => setTheme(initial));
 
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("/sw.js").catch(() => undefined);
-    }
+    let serviceWorkerTimer: number | undefined;
+    const registerServiceWorker = () => {
+      serviceWorkerTimer = window.setTimeout(() => {
+        if ("serviceWorker" in navigator) {
+          navigator.serviceWorker.register("/sw.js").catch(() => undefined);
+        }
+      }, 1800);
+    };
 
-    return () => window.cancelAnimationFrame(themeFrame);
+    if (document.readyState === "complete") registerServiceWorker();
+    else window.addEventListener("load", registerServiceWorker, { once: true });
+
+    return () => {
+      window.cancelAnimationFrame(themeFrame);
+      if (serviceWorkerTimer) window.clearTimeout(serviceWorkerTimer);
+      window.removeEventListener("load", registerServiceWorker);
+    };
   }, []);
 
   useEffect(() => {
@@ -131,14 +145,40 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let videoTimer: number | undefined;
+
+    const scheduleVideo = () => {
+      if (videoTimer) window.clearTimeout(videoTimer);
+      if (motionPreference.matches) {
+        setHeroVideoEnabled(false);
+        setHeroVideoPlaying(false);
+        return;
+      }
+
+      videoTimer = window.setTimeout(() => setHeroVideoEnabled(true), 1800);
+    };
+
+    if (document.readyState === "complete") scheduleVideo();
+    else window.addEventListener("load", scheduleVideo, { once: true });
+
+    motionPreference.addEventListener("change", scheduleVideo);
+    return () => {
+      if (videoTimer) window.clearTimeout(videoTimer);
+      window.removeEventListener("load", scheduleVideo);
+      motionPreference.removeEventListener("change", scheduleVideo);
+    };
+  }, []);
+
+  useEffect(() => {
     const video = heroVideoRef.current;
-    if (!video) return;
+    if (!video || !heroVideoEnabled) return;
 
     const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
     const syncPlayback = () => {
       if (motionPreference.matches) {
         video.pause();
-        video.currentTime = 0;
+        setHeroVideoPlaying(false);
         return;
       }
 
@@ -148,7 +188,7 @@ export default function Home() {
     syncPlayback();
     motionPreference.addEventListener("change", syncPlayback);
     return () => motionPreference.removeEventListener("change", syncPlayback);
-  }, []);
+  }, [heroVideoEnabled]);
 
   const toggleTheme = () => {
     const next = theme === "dark" ? "light" : "dark";
@@ -337,19 +377,38 @@ export default function Home() {
         </div>
 
         <div className="hero-visual" role="img" aria-label="Elegante Hochzeitszeremonie am See vor einer alpinen Kulisse">
+          <picture className="hero-poster">
+            <source srcSet="/hero-event-poster.avif" type="image/avif" />
+            <source srcSet="/hero-event-poster.webp" type="image/webp" />
+            <img
+              src="/hero-event-poster.jpg"
+              alt=""
+              width="720"
+              height="720"
+              loading="eager"
+              decoding="async"
+              fetchPriority="high"
+            />
+          </picture>
           <video
             ref={heroVideoRef}
+            className={heroVideoPlaying ? "hero-video is-playing" : "hero-video"}
             autoPlay
             muted
             loop
             playsInline
-            preload="metadata"
-            poster="/hero-event-poster.jpg"
+            preload="none"
             disablePictureInPicture
             aria-hidden="true"
             tabIndex={-1}
+            onPlaying={() => setHeroVideoPlaying(true)}
           >
-            <source src="/hero-event.mp4" type="video/mp4" />
+            {heroVideoEnabled && (
+              <>
+                <source src="/hero-event-mobile.mp4" type="video/mp4" media="(max-width: 700px)" />
+                <source src="/hero-event.mp4" type="video/mp4" />
+              </>
+            )}
           </video>
           <div className="image-label"><span>SELECTED SCENE</span><span>001 / 003</span></div>
           <i className="track-marker" aria-hidden="true" />
@@ -402,11 +461,35 @@ export default function Home() {
           <a href="#anfrage" className="text-link">EIGENES FEST BESPRECHEN <Arrow /></a>
         </div>
         <figure className="work-image work-image-main">
-          <img src="/garden-wedding.jpg" alt="Romantische Hochzeitstafel in einem Garten" loading="lazy" />
+          <picture>
+            <source
+              srcSet="/garden-wedding-480.avif 480w, /garden-wedding-800.avif 800w"
+              sizes="(max-width: 700px) calc(100vw - 20px), 55vw"
+              type="image/avif"
+            />
+            <source
+              srcSet="/garden-wedding-480.webp 480w, /garden-wedding-800.webp 800w"
+              sizes="(max-width: 700px) calc(100vw - 20px), 55vw"
+              type="image/webp"
+            />
+            <img src="/garden-wedding.jpg" alt="Romantische Hochzeitstafel in einem Garten" width="1041" height="1400" loading="lazy" decoding="async" />
+          </picture>
           <figcaption><span>GARTENHOCHZEIT</span><span>SOMMER · ZÜRICH</span></figcaption>
         </figure>
         <figure className="work-image work-image-small">
-          <img src="/wedding-table.jpg" alt="Hochzeitstische mit Kerzen und Grün" loading="lazy" />
+          <picture>
+            <source
+              srcSet="/wedding-table-400.avif 400w, /wedding-table-720.avif 720w"
+              sizes="(max-width: 700px) 72vw, 32vw"
+              type="image/avif"
+            />
+            <source
+              srcSet="/wedding-table-400.webp 400w, /wedding-table-720.webp 720w"
+              sizes="(max-width: 700px) 72vw, 32vw"
+              type="image/webp"
+            />
+            <img src="/wedding-table.jpg" alt="Hochzeitstische mit Kerzen und Grün" width="1600" height="1067" loading="lazy" decoding="async" />
+          </picture>
           <figcaption><span>DINNER SETTING</span><span>PRIVATE FEIER</span></figcaption>
         </figure>
       </section>

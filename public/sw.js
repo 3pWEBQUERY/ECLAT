@@ -1,5 +1,5 @@
-const CACHE = "eclat-v2";
-const CORE = ["/", "/manifest.webmanifest", "/hero-event-poster.jpg", "/garden-wedding.jpg", "/wedding-table.jpg"];
+const CACHE = "eclat-v3";
+const CORE = ["/", "/manifest.webmanifest", "/icon-192.png", "/hero-event-poster.avif"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(CORE)));
