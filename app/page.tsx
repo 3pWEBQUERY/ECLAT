@@ -82,6 +82,7 @@ export default function Home() {
   });
   const [legalPanel, setLegalPanel] = useState<"impressum" | "datenschutz" | null>(null);
   const heroRef = useRef<HTMLElement>(null);
+  const heroVideoRef = useRef<HTMLVideoElement>(null);
   const eventSelectRef = useRef<HTMLDivElement>(null);
   const eventSelectButtonRef = useRef<HTMLButtonElement>(null);
   const budgetSelectRef = useRef<HTMLDivElement>(null);
@@ -127,6 +128,26 @@ export default function Home() {
     };
     document.addEventListener("pointerdown", closeCustomSelects);
     return () => document.removeEventListener("pointerdown", closeCustomSelects);
+  }, []);
+
+  useEffect(() => {
+    const video = heroVideoRef.current;
+    if (!video) return;
+
+    const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const syncPlayback = () => {
+      if (motionPreference.matches) {
+        video.pause();
+        video.currentTime = 0;
+        return;
+      }
+
+      video.play().catch(() => undefined);
+    };
+
+    syncPlayback();
+    motionPreference.addEventListener("change", syncPlayback);
+    return () => motionPreference.removeEventListener("change", syncPlayback);
   }, []);
 
   const toggleTheme = () => {
@@ -315,8 +336,21 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="hero-visual" aria-label="Festlich gedeckte Tafel bei einem eleganten Event">
-          <img src="/event-dinner.jpg" alt="Elegante, festlich gedeckte lange Tafel" fetchPriority="high" />
+        <div className="hero-visual" role="img" aria-label="Elegante Hochzeitszeremonie am See vor einer alpinen Kulisse">
+          <video
+            ref={heroVideoRef}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            poster="/hero-event-poster.jpg"
+            disablePictureInPicture
+            aria-hidden="true"
+            tabIndex={-1}
+          >
+            <source src="/hero-event.mp4" type="video/mp4" />
+          </video>
           <div className="image-label"><span>SELECTED SCENE</span><span>001 / 003</span></div>
           <i className="track-marker" aria-hidden="true" />
         </div>
