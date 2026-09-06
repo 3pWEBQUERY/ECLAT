@@ -332,7 +332,7 @@ export default function Home() {
     <main>
       <header className={`site-header${menuOpen ? " menu-active" : ""}`}>
         <a className="wordmark" href="#top" aria-label="LUVIYAH Startseite">
-          LUVIYAH
+          LUVIYAH<span>EVENTS</span>
         </a>
         <nav className={menuOpen ? "nav-open" : ""} aria-label="Hauptnavigation">
           <div className="nav-links">
@@ -735,7 +735,7 @@ export default function Home() {
       </section>
 
       <footer>
-        <div className="footer-brand">LUVIYAH</div>
+        <div className="footer-brand">LUVIYAH<small>EVENTS</small></div>
         <div><span>KONTAKT</span><a href="mailto:hallo@eclat-events.ch">hallo@eclat-events.ch</a><a href="tel:+41445550102">+41 44 555 01 02</a></div>
         <div><span>FOLGEN</span><a className="footer-social-link" href="#">Instagram <Arrow /></a><a className="footer-social-link" href="#">Pinterest <Arrow /></a></div>
         <div><span>RECHTLICHES</span><button type="button" className="footer-link" onClick={() => openLegalPanel("impressum")}>Impressum</button><button type="button" className="footer-link" onClick={() => openLegalPanel("datenschutz")}>Datenschutz</button></div>
@@ -745,7 +745,7 @@ export default function Home() {
       {legalPanel && (
         <section className="legal-overlay" role="dialog" aria-modal="true" aria-labelledby="legal-title">
           <div className="legal-topline">
-            <a className="legal-wordmark" href="#top" onClick={() => setLegalPanel(null)}>LUVIYAH</a>
+            <a className="legal-wordmark" href="#top" onClick={() => setLegalPanel(null)}>LUVIYAH <span>EVENTS</span></a>
             <span>{legalPanel === "impressum" ? "RECHTLICHES / 01" : "RECHTLICHES / 02"}</span>
             <button autoFocus type="button" className="legal-close" onClick={() => setLegalPanel(null)} aria-label="Fenster schließen"><i /><i /></button>
           </div>
