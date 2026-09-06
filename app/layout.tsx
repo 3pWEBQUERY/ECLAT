@@ -2,20 +2,20 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 const siteUrl = "https://eclat-kappa-inky.vercel.app";
-const seoTitle = "Eventplanung Zürich für Hochzeiten & Feste | Éclat";
-const seoDescription = "Éclat Events plant Hochzeiten, Geburtstage, Firmenfeste und private Feiern in Zürich und Umgebung – persönlich, stilvoll und transparent kalkuliert.";
+const seoTitle = "Eventplanung Zürich für Hochzeiten & Feste | LUVIYAH";
+const seoDescription = "LUVIYAH plant Hochzeiten, Geburtstage, Firmenfeste und private Feiern in Zürich und Umgebung – persönlich, stilvoll und transparent kalkuliert.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
     default: seoTitle,
-    template: "%s | Éclat Events",
+    template: "%s | LUVIYAH",
   },
   description: seoDescription,
-  applicationName: "Éclat Events",
-  authors: [{ name: "Éclat Events", url: siteUrl }],
-  creator: "Éclat Events",
-  publisher: "Éclat Events",
+  applicationName: "LUVIYAH",
+  authors: [{ name: "LUVIYAH", url: siteUrl }],
+  creator: "LUVIYAH",
+  publisher: "LUVIYAH",
   category: "Eventplanung",
   keywords: [
     "Eventplanung Zürich",
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     "Firmenfest Zürich",
     "Eventagentur Zürich",
     "private Feiern planen",
-    "Éclat Events",
+    "LUVIYAH",
   ],
   alternates: {
     canonical: "/",
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     },
   },
   manifest: "/manifest.webmanifest",
-  appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: "Éclat" },
+  appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: "LUVIYAH" },
   formatDetection: { telephone: false },
   openGraph: {
     title: seoTitle,
@@ -53,7 +53,7 @@ export const metadata: Metadata = {
     url: "/",
     type: "website",
     locale: "de_CH",
-    siteName: "Éclat Events",
+    siteName: "LUVIYAH",
     images: [{ url: "/og.png", width: 1731, height: 909, alt: "Éclat Events – stilvolle Eventplanung in Zürich" }],
   },
   twitter: {
@@ -76,8 +76,7 @@ const structuredData = {
       "@type": "WebSite",
       "@id": `${siteUrl}/#website`,
       url: siteUrl,
-      name: "Éclat Events",
-      alternateName: "Éclat",
+      name: "LUVIYAH",
       description: seoDescription,
       inLanguage: "de-CH",
       publisher: { "@id": `${siteUrl}/#organization` },
@@ -85,8 +84,7 @@ const structuredData = {
     {
       "@type": "Organization",
       "@id": `${siteUrl}/#organization`,
-      name: "Éclat Events",
-      alternateName: "Éclat",
+      name: "LUVIYAH",
       url: siteUrl,
       logo: {
         "@type": "ImageObject",

@@ -331,8 +331,8 @@ export default function Home() {
   return (
     <main>
       <header className={`site-header${menuOpen ? " menu-active" : ""}`}>
-        <a className="wordmark" href="#top" aria-label="Éclat Startseite">
-          ÉCLAT<span>EVENTS</span>
+        <a className="wordmark" href="#top" aria-label="LUVIYAH Startseite">
+          LUVIYAH
         </a>
         <nav className={menuOpen ? "nav-open" : ""} aria-label="Hauptnavigation">
           <div className="nav-links">
@@ -513,7 +513,7 @@ export default function Home() {
       <section className="promise">
         <div className="promise-side">UNSER VERSPRECHEN</div>
         <blockquote>„Wir planen nicht für Instagram. Wir planen für den Moment, in dem Sie sich umsehen und denken: <em>Genau so.</em>“</blockquote>
-        <div className="signature">Éclat · Gründerinn · Fabienne Celine Krempel</div>
+        <div className="signature">LUVIYAH · Gründerinn · Fabienne Celine Krempel</div>
       </section>
 
       <section className="pricing section-pad">
@@ -735,17 +735,17 @@ export default function Home() {
       </section>
 
       <footer>
-        <div className="footer-brand">ÉCLAT<small>EVENTS</small></div>
+        <div className="footer-brand">LUVIYAH</div>
         <div><span>KONTAKT</span><a href="mailto:hallo@eclat-events.ch">hallo@eclat-events.ch</a><a href="tel:+41445550102">+41 44 555 01 02</a></div>
         <div><span>FOLGEN</span><a className="footer-social-link" href="#">Instagram <Arrow /></a><a className="footer-social-link" href="#">Pinterest <Arrow /></a></div>
         <div><span>RECHTLICHES</span><button type="button" className="footer-link" onClick={() => openLegalPanel("impressum")}>Impressum</button><button type="button" className="footer-link" onClick={() => openLegalPanel("datenschutz")}>Datenschutz</button></div>
-        <div className="footer-bottom"><span>© 2026 ÉCLAT EVENTS</span><span>ZÜRICH · SCHWEIZ</span><a href="#top">NACH OBEN ↑</a></div>
+        <div className="footer-bottom"><span>© 2026 LUVIYAH</span><span>ZÜRICH · SCHWEIZ</span><a href="#top">NACH OBEN ↑</a></div>
       </footer>
 
       {legalPanel && (
         <section className="legal-overlay" role="dialog" aria-modal="true" aria-labelledby="legal-title">
           <div className="legal-topline">
-            <a className="legal-wordmark" href="#top" onClick={() => setLegalPanel(null)}>ÉCLAT <span>EVENTS</span></a>
+            <a className="legal-wordmark" href="#top" onClick={() => setLegalPanel(null)}>LUVIYAH</a>
             <span>{legalPanel === "impressum" ? "RECHTLICHES / 01" : "RECHTLICHES / 02"}</span>
             <button autoFocus type="button" className="legal-close" onClick={() => setLegalPanel(null)} aria-label="Fenster schließen"><i /><i /></button>
           </div>
@@ -761,8 +761,8 @@ export default function Home() {
                 <p className="legal-kicker">ANGABEN ZUM UNTERNEHMEN</p>
                 <h2 id="legal-title">Impressum</h2>
                 <div className="legal-grid">
-                  <div><h3>Anbieterin</h3><p>Éclat Events<br />Eventplanung in Gründung<br />Zürich, Schweiz</p></div>
-                  <div><h3>Vertretung</h3><p>Vertreten durch die beiden Gründerinnen von Éclat Events.</p></div>
+                  <div><h3>Anbieterin</h3><p>LUVIYAH<br />Eventplanung in Gründung<br />Zürich, Schweiz</p></div>
+                  <div><h3>Vertretung</h3><p>Vertreten durch die beiden Gründerinnen von LUVIYAH.</p></div>
                   <div><h3>Kontakt</h3><p><a href="mailto:hallo@eclat-events.ch">hallo@eclat-events.ch</a><br /><a href="tel:+41445550102">+41 44 555 01 02</a></p></div>
                   <div><h3>Geschäftsadresse</h3><p>Die vollständige Geschäftsadresse und der Handelsregistereintrag werden mit Abschluss der Unternehmensgründung ergänzt.</p></div>
                 </div>
@@ -774,7 +774,7 @@ export default function Home() {
                 <p className="legal-kicker">UMGANG MIT IHREN DATEN</p>
                 <h2 id="legal-title">Datenschutz</h2>
                 <div className="legal-intro"><strong>Privatsphäre gehört für uns zu einer guten Gastgeberkultur.</strong><p>Wir bearbeiten nur Daten, die für die Kommunikation und Planung Ihres Anlasses erforderlich sind. Grundlage sind das Schweizer Datenschutzgesetz und, soweit anwendbar, die DSGVO.</p></div>
-                <div className="legal-section"><span>01</span><div><h3>Verantwortliche Stelle</h3><p>Éclat Events, Zürich, Schweiz. Datenschutzanfragen richten Sie bitte an <a href="mailto:hallo@eclat-events.ch">hallo@eclat-events.ch</a>.</p></div></div>
+                <div className="legal-section"><span>01</span><div><h3>Verantwortliche Stelle</h3><p>LUVIYAH, Zürich, Schweiz. Datenschutzanfragen richten Sie bitte an <a href="mailto:hallo@eclat-events.ch">hallo@eclat-events.ch</a>.</p></div></div>
                 <div className="legal-section"><span>02</span><div><h3>Anfrageformular</h3><p>Beim Absenden verarbeiten wir Name, E-Mail-Adresse, Anlass, Datum, Gästezahl, Budgetrahmen und Ihre Nachricht. Diese Angaben werden ausschliesslich zur Bearbeitung Ihrer Anfrage und zur möglichen Vertragsanbahnung genutzt.</p></div></div>
                 <div className="legal-section"><span>03</span><div><h3>Speicherung & Dienstleister</h3><p>Anfragedaten werden in einer geschützten Neon-Postgres-Datenbank gespeichert. Technische Hosting-Dienstleister können dabei im Rahmen ihrer Auftragsverarbeitung Zugriff auf notwendige technische Daten erhalten.</p></div></div>
                 <div className="legal-section"><span>04</span><div><h3>Lokale Einstellungen</h3><p>Ihre Auswahl für Hell- oder Dunkelmodus wird ausschliesslich lokal auf Ihrem Gerät gespeichert. Die installierbare Web-App nutzt einen Service Worker, um notwendige Seitendateien zwischenzuspeichern.</p></div></div>

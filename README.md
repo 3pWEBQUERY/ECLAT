@@ -1,4 +1,4 @@
-# Éclat Events
+# LUVIYAH
 
 Premium Event-Website für Hochzeiten, private Feste und Business Events in Zürich.
 

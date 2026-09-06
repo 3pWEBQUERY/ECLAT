@@ -2,8 +2,8 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Éclat Events",
-    short_name: "Éclat",
+    name: "LUVIYAH",
+    short_name: "LUVIYAH",
     description: "Persönliche Eventplanung für besondere Feste.",
     start_url: "/",
     display: "standalone",

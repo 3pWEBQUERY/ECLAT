@@ -1,4 +1,4 @@
-const CACHE = "eclat-v3";
+const CACHE = "luviyah-v1";
 const CORE = ["/", "/manifest.webmanifest", "/icon-192.png", "/hero-event-poster.avif"];
 
 self.addEventListener("install", (event) => {
