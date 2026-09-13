@@ -93,7 +93,7 @@ const structuredData = {
         height: 512,
       },
       image: `${siteUrl}/og.png`,
-      email: "hallo@eclat-events.ch",
+      email: "contact@LUVIYAH.ch",
       telephone: "+41 44 555 01 02",
       areaServed: {
         "@type": "AdministrativeArea",
@@ -102,7 +102,7 @@ const structuredData = {
       contactPoint: {
         "@type": "ContactPoint",
         contactType: "Kundenberatung",
-        email: "hallo@eclat-events.ch",
+        email: "contact@LUVIYAH.ch",
         telephone: "+41 44 555 01 02",
         availableLanguage: ["de", "de-CH"],
         areaServed: "CH",
