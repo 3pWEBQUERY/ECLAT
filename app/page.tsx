@@ -494,9 +494,58 @@ export default function Home() {
         </figure>
       </section>
 
+      <section className="moodboard section-pad" aria-labelledby="moodboard-title">
+        <div className="moodboard-heading">
+          <span>04 / MOMENTE</span>
+          <h2 id="moodboard-title">Ein Fest.<br /><em>Viele Gefühle.</em></h2>
+          <p>Jeder Anlass hat seinen eigenen Rhythmus. Wir verbinden Atmosphäre, Details und Begegnungen zu einem Bild, das unverwechselbar Ihres ist.</p>
+        </div>
+
+        <div className="moodboard-grid">
+          <figure className="mood-card mood-card-ceremony">
+            <picture>
+              <source srcSet="/hero-event-poster.avif" type="image/avif" />
+              <source srcSet="/hero-event-poster.webp" type="image/webp" />
+              <img src="/hero-event-poster.jpg" alt="Hochzeitszeremonie am See vor alpiner Kulisse" width="720" height="720" loading="lazy" decoding="async" />
+            </picture>
+            <figcaption><span>ZEREMONIE</span><span>AM SEE</span></figcaption>
+          </figure>
+
+          <figure className="mood-card mood-card-dinner">
+            <img src="/event-dinner.jpg" alt="Festlich inszenierte Dinner-Tafel mit Kerzen und Federn" width="1792" height="1194" loading="lazy" decoding="async" />
+            <figcaption><span>DINNER</span><span>INSZENIERUNG</span></figcaption>
+          </figure>
+
+          <figure className="mood-card mood-card-table">
+            <picture>
+              <source srcSet="/wedding-table-400.avif 400w, /wedding-table-720.avif 720w" sizes="(max-width: 700px) 68vw, 35vw" type="image/avif" />
+              <source srcSet="/wedding-table-400.webp 400w, /wedding-table-720.webp 720w" sizes="(max-width: 700px) 68vw, 35vw" type="image/webp" />
+              <img src="/wedding-table.jpg" alt="Warme Hochzeitstafel mit Kerzen und grünen Akzenten" width="1600" height="1067" loading="lazy" decoding="async" />
+            </picture>
+            <figcaption><span>TAFEL</span><span>DETAILS</span></figcaption>
+          </figure>
+
+          <figure className="mood-card mood-card-garden">
+            <picture>
+              <source srcSet="/garden-wedding-480.avif 480w, /garden-wedding-800.avif 800w" sizes="(max-width: 700px) 68vw, 31vw" type="image/avif" />
+              <source srcSet="/garden-wedding-480.webp 480w, /garden-wedding-800.webp 800w" sizes="(max-width: 700px) 68vw, 31vw" type="image/webp" />
+              <img src="/garden-wedding.jpg" alt="Intime Festtafel unter einem Olivenbaum" width="1041" height="1400" loading="lazy" decoding="async" />
+            </picture>
+            <figcaption><span>GARTENFEST</span><span>IM FREIEN</span></figcaption>
+          </figure>
+
+          <div className="moodboard-note">
+            <span>LUVIYAH ARCHIVE · 01</span>
+            <p>Das Besondere liegt dort, wo alles zusammenkommt.</p>
+          </div>
+          <i className="moodboard-cross moodboard-cross-one" aria-hidden="true" />
+          <i className="moodboard-cross moodboard-cross-two" aria-hidden="true" />
+        </div>
+      </section>
+
       <section id="prozess" className="process section-pad">
         <div className="section-heading compact">
-          <span>04 / DER WEG</span>
+          <span>05 / DER WEG</span>
           <h2>Von der Idee<br />zum <span className="process-title-word">Gänsehautmoment.</span></h2>
         </div>
         <div className="steps">
@@ -518,7 +567,7 @@ export default function Home() {
 
       <section className="pricing section-pad">
         <div className="section-heading compact">
-          <span>05 / TRANSPARENT</span>
+          <span>06 / TRANSPARENT</span>
           <h2>Schön geplant.<br />Fair kalkuliert.</h2>
         </div>
         <div className="price-grid">
@@ -546,7 +595,7 @@ export default function Home() {
 
       <section id="anfrage" className="contact section-pad">
         <div className="contact-copy">
-          <span>06 / IHR FEST</span>
+          <span>07 / IHR FEST</span>
           <h2>Erzählen Sie<br />uns davon.</h2>
           <p>Ein paar Eckdaten genügen. Wir melden uns innerhalb von zwei Werktagen mit ersten Gedanken und einem Termin für ein unverbindliches Kennenlernen.</p>
           <div className="availability"><i /> AKTUELL TERMINE FÜR 2026 / 2027</div>
