@@ -541,6 +541,13 @@ export default function Home() {
           <i className="moodboard-cross moodboard-cross-one" aria-hidden="true" />
           <i className="moodboard-cross moodboard-cross-two" aria-hidden="true" />
         </div>
+
+        <div className="moodboard-action">
+          <a className="gallery-link" href="/gallery">
+            <span>GALLERY ÖFFNEN</span>
+            <Arrow />
+          </a>
+        </div>
       </section>
 
       <section id="prozess" className="process section-pad">
