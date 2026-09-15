@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useRef, useState } from "react";
+import Link from "next/link";
 
 const services = [
   {
@@ -340,6 +341,7 @@ export default function Home() {
             <a href="#arbeiten" onClick={() => setMenuOpen(false)}><span>02</span>Einblicke</a>
             <a href="#prozess" onClick={() => setMenuOpen(false)}><span>03</span>Ablauf</a>
             <a href="#anfrage" onClick={() => setMenuOpen(false)}><span>04</span>Anfragen</a>
+            <Link href="/gallery" onClick={() => setMenuOpen(false)}><span>05</span>Gallery</Link>
           </div>
           <div className="mobile-nav-meta">
             <div><span>STUDIO</span><p>Zürich · Schweiz<br />Für Feste mit Charakter.</p></div>
